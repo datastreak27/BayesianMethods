@@ -4,23 +4,53 @@ format: pdf
 editor: visual
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+## 
 
 ```{r}
-1 + 1
+library(bayesrules)
+library(bayesplot)
+library(ggplot2)
+library(dplyr)
 ```
 
-You can add options to executable code like this
+# Section 1
 
 ```{r}
-#| echo: false
-2 * 2
+x <- 8
+n <- 10
+
+compute_posterior <- function(a_prior, b_prior) {
+  #compute posteriors for each
+  a_post <- a_prior + x
+  b_post<- b_prior + n - x
+  
+  posterior_mean <- a_post/(a_post + b_post)
+  #compute by 95% convidence level
+  ci <- qbeta(c(0.025, 0.975), a_post, b_post)
+  #print results
+  cat(sprintf("Prior: Beta(%.1f, %.1f) -> Posterior: Beta(%.1f, %.1f)\n", 
+              a_prior, b_prior, a_post, b_post))
+  cat(sprintf("  Posterior Mean: %.4f\n", posterior_mean))
+  cat(sprintf("  95%% Credible Interval: [%.4f, %.4f]\n\n", ci[1], ci[2]))
+}
+#author's prior
+compute_posterior(0.5,0.5)
+#uninformative prior
+compute_posterior(1,1)
+#sympetric prior
+compute_posterior(3,3)
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+```{r}
+plot_beta_binomial(alpha = 0.5, beta = 0.5, y = 8, n = 10)
+plot_beta_binomial(alpha = 1, beta = 1, y = 8, n = 10)
+plot_beta_binomial(alpha = 3, beta = 3, y = 8, n = 10)
+```
+
+# Section 2
+
+```{r}
+set.seed(417)
+N <- 10000
+
+```
