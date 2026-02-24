@@ -52,5 +52,5 @@ plot_beta_binomial(alpha = 3, beta = 3, y = 8, n = 10)
 ```{r}
 set.seed(417)
 N <- 10000
-
+print("test push")
 ```
