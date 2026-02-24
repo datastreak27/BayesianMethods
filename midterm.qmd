@@ -19,6 +19,7 @@ library(dplyr)
 x <- 8
 n <- 10
 
+#function to compute posteriors for each beta distribution
 compute_posterior <- function(a_prior, b_prior) {
   #compute posteriors for each
   a_post <- a_prior + x
@@ -33,24 +34,83 @@ compute_posterior <- function(a_prior, b_prior) {
   cat(sprintf("  Posterior Mean: %.4f\n", posterior_mean))
   cat(sprintf("  95%% Credible Interval: [%.4f, %.4f]\n\n", ci[1], ci[2]))
 }
+
+#beta distributions
 #author's prior
 compute_posterior(0.5,0.5)
 #uninformative prior
 compute_posterior(1,1)
-#sympetric prior
+#symetric prior
 compute_posterior(3,3)
 ```
 
+#### Note to self when writing the report
+
+-   Results are meaningfully different, although the student achieved exactly an 80% success rate in all three scenarios presented by their beta distributions.
+
+-   Posterior Mean Drops from 77.3% to 68.8%
+
+-   This is a demonstration of prior sensitivity because the sample size is relatively small, hence the likelihood overwhelms the initial assumptions. The choice of prior depends on the final estimate of the student's true mastery.
+
 ```{r}
+#author's prior
 plot_beta_binomial(alpha = 0.5, beta = 0.5, y = 8, n = 10)
+#uninformative prior
 plot_beta_binomial(alpha = 1, beta = 1, y = 8, n = 10)
+#symetric prior
 plot_beta_binomial(alpha = 3, beta = 3, y = 8, n = 10)
 ```
 
 # Section 2
 
 ```{r}
-set.seed(417)
+set.seed(272727)
 N <- 10000
-print("test push")
+```
+
+Carrying Over $\theta$ \| x \~ $Beta(1, 1)$ from Section 1
+
+#### Scenario 1: 80% Success rate
+
+Posterior distributions for each student
+
+-   **Student 1 (**$x_1=4, n_1=5$): $ \rightarrow \mathbf{Beta(5, 2)}$
+
+-   **Student 2 (**$x_2=8, n_2=10$): $ \rightarrow \mathbf{Beta(9, 3)}$
+
+Null/Alternative Hypothesis
+
+-   $H_0$: $\theta_1 \ge \theta_2$
+
+-   $H_1$: $\theta_1 \lt \theta_2$
+
+```{r}
+
+theta1_80 <- rbeta(N, shape1 = 5, shape2 = 2)
+theta2_80 <- rbeta(N, shape1 = 9, shape2 = 3)
+
+probability_null_80 <- mean(theta1_80 >= theta2_80)
+cat("80% Scenario - Posterior Probability of H0:", probability_null_80, "\n")
+```
+
+#### Scenario 2: Guaranteed Success Rate (100%)
+
+Posterior Distributions for each student
+
+-   **Student 1 (**$x_1=5, n_1=5$): $ \rightarrow \mathbf{Beta(6, 1)}$
+
+-   **Student 2 (**$x_2=10, n_2=10$): $ \rightarrow \mathbf{Beta(11, 1)}$
+
+Null/Alternative Hypothesis
+
+-   $H_0$: $\theta_1 \ge \theta_2$
+
+-   $H_1$: $\theta_1 \lt \theta_2$
+
+```{r}
+theta1_100 <- rbeta(N, shape1 = 6, shape2 = 1)
+theta2_100 <- rbeta(N, shape1 = 11, shape2 = 1)
+
+probability_null_100 <- mean(theta1_100 >= theta2_100)
+cat("100% Scenario - Posterior Probability of H0:", probability_null_100, "\n")
 ```
