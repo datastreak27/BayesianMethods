@@ -76,9 +76,9 @@ Carrying Over $\theta$ \| x \~ $Beta(1, 1)$ from Section 1
 
 Posterior distributions for each student
 
--   **Student 1 (**$x_1=4, n_1=5$): $Beta(5, 2)$
+-   **Student 1 (**$x_1=4, n_1=5$): $\theta$ \| x \~ $Beta(5, 2)$
 
--   **Student 2 (**$x_2=8, n_2=10$): $Beta(9, 3)$
+-   **Student 2 (**$x_2=8, n_2=10$): $\theta$ \| x \~ $Beta(9, 3)$
 
 Null/Alternative Hypothesis
 
@@ -103,9 +103,9 @@ Note to self:
 
 Posterior Distributions for each student
 
--   **Student 1 (**$x_1=5, n_1=5$): $Beta(6, 1)$
+-   **Student 1 (**$x_1=5, n_1=5$): $\theta$ \| x \~ $Beta(6, 1)$
 
--   **Student 2 (**$x_2=10, n_2=10$): $Beta(11,1)$
+-   **Student 2 (**$x_2=10, n_2=10$): $\theta$ \| x \~ $Beta(11,1)$
 
 Null/Alternative Hypothesis
 
