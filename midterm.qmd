@@ -16,7 +16,9 @@ library(dplyr)
 # Section 1
 
 ```{r}
+#sucesses
 x <- 8
+#samples
 n <- 10
 
 #function to compute posteriors for each beta distribution
@@ -74,9 +76,9 @@ Carrying Over $\theta$ \| x \~ $Beta(1, 1)$ from Section 1
 
 Posterior distributions for each student
 
--   **Student 1 (**$x_1=4, n_1=5$): $ \rightarrow \mathbf{Beta(5, 2)}$
+-   **Student 1 (**$x_1=4, n_1=5$): $Beta(5, 2)$
 
--   **Student 2 (**$x_2=8, n_2=10$): $ \rightarrow \mathbf{Beta(9, 3)}$
+-   **Student 2 (**$x_2=8, n_2=10$): $Beta(9, 3)$
 
 Null/Alternative Hypothesis
 
@@ -93,13 +95,17 @@ probability_null_80 <- mean(theta1_80 >= theta2_80)
 cat("80% Scenario - Posterior Probability of H0:", probability_null_80, "\n")
 ```
 
+Note to self:
+
+-   Probability that Student 1's true mastery is greater or equal to Student 2 is 44.65%
+
 #### Scenario 2: Guaranteed Success Rate (100%)
 
 Posterior Distributions for each student
 
--   **Student 1 (**$x_1=5, n_1=5$): $ \rightarrow \mathbf{Beta(6, 1)}$
+-   **Student 1 (**$x_1=5, n_1=5$): $Beta(6, 1)$
 
--   **Student 2 (**$x_2=10, n_2=10$): $ \rightarrow \mathbf{Beta(11, 1)}$
+-   **Student 2 (**$x_2=10, n_2=10$): $Beta(11,1)$
 
 Null/Alternative Hypothesis
 
@@ -114,3 +120,7 @@ theta2_100 <- rbeta(N, shape1 = 11, shape2 = 1)
 probability_null_100 <- mean(theta1_100 >= theta2_100)
 cat("100% Scenario - Posterior Probability of H0:", probability_null_100, "\n")
 ```
+
+Note to self
+
+-   Probability that Student 1's true mastery is greater than or equal to Student 2 is 35.76%, a 8.89% drop from scenario 1.
