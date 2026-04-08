@@ -1,0 +1,22 @@
+---
+title: "Homework 5 Branson Vu"
+format: pdf
+editor: visual
+---
+
+## Problem 1
+
+```{r}
+library(geoR)
+library(rstan)
+data("gambia")
+
+#save mean of green
+green_mean <- mean(gambia$green)
+```
+
+## 1a.
+
+```{r}
+
+```
