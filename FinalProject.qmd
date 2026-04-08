@@ -1,0 +1,13 @@
+---
+title: "FinalProject"
+format: pdf
+editor: visual
+---
+
+```{r}
+library(dplyr)
+library(skimr)
+summary(concrete_train)
+
+skim(concrete_train)
+```
