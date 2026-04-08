@@ -7,6 +7,7 @@ editor: visual
 ## Problem 1
 
 ```{r}
+#| output: false
 library(geoR)
 library(rstan)
 data("gambia")
@@ -18,5 +19,97 @@ green_mean <- mean(gambia$green)
 ## 1a.
 
 ```{r}
+malaria_model <- "
+data {
+  int<lower=0> N;
+  int<lower=0,upper=1> pos[N];
+  vector[N] green;
+  int<lower=0,upper=1> netuse[N];   
+}
+parameters {
+  real beta0;
+  real beta1;
+  real beta2;
+}
+model {
+  // Priors (sd=10, variance=10^2)
+  beta0 ~ normal(0, 10);
+  beta1 ~ normal(0, 10);
+  beta2 ~ normal(0, 10);
 
+  // Likelihood
+  pos ~ bernoulli_logit(beta0 + beta1 * green + beta2 * to_vector(netuse));
+}
+"
+```
+
+```{r}
+#| output: false
+malaria_fit <- stan(
+  model_code = malaria_model,
+  data       = stan_data,
+  chains     = 2,
+  iter       = 6000,
+  warmup     = 1000,
+  seed       = 303
+)
+```
+
+```{r}
+posterior <- rstan::extract(malaria_fit)
+```
+
+## 1b
+
+```{r}
+log_odds0 <- posterior$beta0 + posterior$beta1 * green_mean + posterior$beta2 * 0
+odds0 <- exp(log_odds0)
+
+#summary
+cat("Posterior mean log-odds (netuse=0):", mean(log_odds0), "\n")
+cat("Posterior mean odds (netuse=0):", mean(odds0), "\n")
+
+#histogram
+hist(odds0,
+     main = "Posterior Distribution of Odds (netuse=0)",
+     xlab = "Odds of Malaria",
+     col = "blue",
+     border = "white",
+     breaks =50
+     )
+```
+
+## 1c
+
+```{r}
+log_odds1 <- posterior$beta0 + posterior$beta1 * green_mean + posterior$beta2 * 1
+odds1 <- exp(log_odds1)
+
+#summary
+cat("Posterior mean log-odds (netuse=1):", mean(log_odds1), "\n")
+cat("Posterior mean odds (netuse=1):", mean(odds1), "\n")
+
+#histogram
+hist(odds1,
+     main = "Posterior Distribution of Odds (netuse=1)",
+     xlab = "Odds of Malaria",
+     col = "lightblue",
+     border = "white",
+     breaks =50
+     )
+```
+
+## 1d
+
+```{r}
+#testing if bed-net decreases Malaria odds
+
+probabilty_decrease <- mean(odds1 < odds0)
+cat("P(bed-net decreases malaria odds)=", probabilty_decrease, "\n")
+
+
+odds_ratio <- odds1 / odds0
+median_reduction <- median(odds_ratio)
+
+print(paste("Median odds ratio (netuse=1 vs netuse=0):", median_reduction))
 ```
