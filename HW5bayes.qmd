@@ -19,6 +19,18 @@ green_mean <- mean(gambia$green)
 ## 1a.
 
 ```{r}
+stan_data <- list(
+  N = nrow(gambia),
+  pos = gambia$pos,
+  green = gambia$green,
+  netuse = gambia$netuse,
+  green_mean = green_mean
+)
+```
+
+```{r}
+# vectorizing the model instead of slide 9 approach so that my desktop/laptop can run the model faster
+
 malaria_model <- "
 data {
   int<lower=0> N;
@@ -32,12 +44,10 @@ parameters {
   real beta2;
 }
 model {
-  // Priors (sd=10, variance=10^2)
   beta0 ~ normal(0, 10);
   beta1 ~ normal(0, 10);
   beta2 ~ normal(0, 10);
 
-  // Likelihood
   pos ~ bernoulli_logit(beta0 + beta1 * green + beta2 * to_vector(netuse));
 }
 "
@@ -47,15 +57,16 @@ model {
 #| output: false
 malaria_fit <- stan(
   model_code = malaria_model,
-  data       = stan_data,
-  chains     = 2,
-  iter       = 6000,
-  warmup     = 1000,
-  seed       = 303
+  data = stan_data,
+  chains = 2,
+  iter = 6000,
+  warmup = 1000,
+  seed = 2727
 )
 ```
 
 ```{r}
+#extract posterior from model
 posterior <- rstan::extract(malaria_fit)
 ```
 
@@ -107,9 +118,13 @@ hist(odds1,
 probabilty_decrease <- mean(odds1 < odds0)
 cat("P(bed-net decreases malaria odds)=", probabilty_decrease, "\n")
 
-
 odds_ratio <- odds1 / odds0
-median_reduction <- median(odds_ratio)
+median(odds_ratio)
 
-print(paste("Median odds ratio (netuse=1 vs netuse=0):", median_reduction))
+quantile(odds_ratio, probs = c(0.025, 0.975))
+
 ```
+
+The posterior probability that bed-net use decreases the odds of contracting malaria is 1 (100%), meaning every posterior sample supports this direction. The median odds ratio is approximately 0.5006761, suggesting that children who sleep under a bed-net have approximately half the odds of contracting malaria compared to children who do not, at average levels of greenness.
+
+Since bed-net use (`netone`) is an observational variable and is not randomly assigned, confounding variables cannot be ruled out and causal conclusions should not be drawn. For example, families who use bed-nets may differ systematically from those who do not. Other unmeasured confounding variables include wealth, socioeconomic status, and healthcare access
