@@ -11,7 +11,7 @@ library(geoR)
 library(rstan)
 data("gambia")
 
-#save mean of green
+# save mean of green 
 green_mean <- mean(gambia$green)
 ```
 
